@@ -11,6 +11,7 @@ $('#login-button').click(function () {
         data: JSON.stringify(user),
         success: function (response) {
             alert("Login successful!");
+            localStorage.setItem('email', email);
             window.location.href = 'index.html';
         },
         error: function (xhr) {
