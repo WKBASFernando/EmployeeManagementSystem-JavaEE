@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/CSS/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH0dyQ4mX+0pL+FJ6q1+cYB7uD+zVY0opQ+kkcV8f3y6M8FJ5vX2Ok7cXWZewNfE" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="bg-animation">
@@ -27,7 +27,6 @@
 
             <form id="loginForm">
                 <div class="input-group">
-                    <label class="input-label" for="fullName">Full Name</label>
                     <div class="input-wrapper">
                         <input type="text" id="fullName" class="form-input" placeholder="Enter your full name" required>
                         <i class="fas fa-user input-icon"></i>
@@ -35,7 +34,6 @@
                 </div>
 
                 <div class="input-group">
-                    <label class="input-label" for="email">Email Address</label>
                     <div class="input-wrapper">
                         <input type="email" id="email" class="form-input" placeholder="Enter your email address" required>
                         <i class="fas fa-envelope input-icon"></i>
@@ -43,14 +41,13 @@
                 </div>
 
                 <div class="input-group">
-                    <label class="input-label" for="password">Password</label>
                     <div class="input-wrapper">
                         <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
                         <i class="fas fa-lock input-icon"></i>
                     </div>
                 </div>
 
-                <button type="submit" class="login-button">
+                <button type="button" class="login-button" id="login-button">Login
                     <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
                     Sign In
                 </button>
@@ -85,7 +82,8 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3U6E+4A9A2Q6b8o0H4F/h9JzRoY0y88TDg8SRGOFUogkflv5K50FUP8VfZfWv4c" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/jquery-3.7.1.min.js"></script>
+    <script type="module" src="JS/SignIn.js"></script>
 </body>
 </html>

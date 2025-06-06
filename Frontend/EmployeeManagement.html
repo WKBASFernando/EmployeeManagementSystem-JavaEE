@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Management System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH0dyQ4mX+0pL+FJ6q1+cYB7uD+zVY0opQ+kkcV8f3y6M8FJ5vX2Ok7cXWZewNfE" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/Employee.css">
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-users"></i> Employee Management System</h1>
+    <p>Efficiently manage your workforce with our comprehensive employee database</p>
+  </div>
+
+  <div class="main-content">
+    <div class="employee-form-card">
+      <div class="form-header">
+        <div class="form-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <h2 class="form-title">Add New Employee</h2>
+      </div>
+
+      <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i>
+        <span>Employee added successfully!</span>
+      </div>
+
+      <form id="employeeForm">
+        <div class="form-group">
+          <label class="form-label" for="employeeId">Employee ID</label>
+          <input type="text" id="employeeId" class="form-control employee-id-display" value="EMP-001" readonly>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employeeName">
+            <i class="fas fa-user"></i> Employee Name
+          </label>
+          <input type="text" id="employeeName" class="form-control" placeholder="Enter full name" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employeeAddress">
+            <i class="fas fa-map-marker-alt"></i> Address
+          </label>
+          <textarea id="employeeAddress" class="form-control" rows="3" placeholder="Enter complete address" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employeePhone">
+            <i class="fas fa-phone"></i> Phone Number
+          </label>
+          <input type="tel" id="employeePhone" class="form-control" placeholder="Enter phone number" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employeeSalary">
+            <i class="fas fa-dollar-sign"></i> Salary
+          </label>
+          <input type="number" id="employeeSalary" class="form-control" placeholder="Enter salary amount" min="0" step="0.01" required>
+        </div>
+
+        <button type="submit" class="btn-save">
+          <i class="fas fa-save"></i> Save Employee
+        </button>
+
+        <button type="button" class="btn-clear" id="clearForm">
+          <i class="fas fa-eraser"></i> Clear Form
+        </button>
+      </form>
+    </div>
+
+    <div class="employees-list-card">
+      <div class="list-header">
+        <h2 class="list-title">
+          <i class="fas fa-list"></i>
+          Employee Directory
+        </h2>
+        <div class="employee-count" id="employeeCount">
+          0 Employees
+        </div>
+      </div>
+
+      <div class="employees-grid" id="employeesGrid">
+        <div class="empty-state">
+          <i class="fas fa-users"></i>
+          <h3>No employees added yet</h3>
+          <p>Start by adding your first employee using the form</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3U6E+4A9A2Q6b8o0H4F/h9JzRoY0y88TDg8SRGOFUogkflv5K50FUP8VfZfWv4c" crossorigin="anonymous"></script>
+
+<script>
+  class EmployeeManager {
+    constructor() {
+      this.employees = [];
+      this.currentId = 1;
+      this.init();
+    }
+
+    init() {
+      this.form = document.getElementById('employeeForm');
+      this.employeesGrid = document.getElementById('employeesGrid');
+      this.employeeCount = document.getElementById('employeeCount');
+      this.successMessage = document.getElementById('successMessage');
+      this.clearButton = document.getElementById('clearForm');
+
+      this.setupEventListeners();
+      this.updateEmployeeId();
+      this.renderEmployees();
+    }
+
+    setupEventListeners() {
+      this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+      this.clearButton.addEventListener('click', () => this.clearForm());
+
+      // Real-time validation
+      const inputs = this.form.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        input.addEventListener('input', () => this.validateInput(input));
+        input.addEventListener('blur', () => this.validateInput(input));
+      });
+    }
+
+    validateInput(input) {
+      if (input.type === 'tel') {
+        // Basic phone validation
+        const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+        if (phoneRegex.test(input.value) || input.value === '') {
+          input.style.borderColor = input.value ? '#2e7d32' : '#e1f5fe';
+        } else {
+          input.style.borderColor = '#d32f2f';
+        }
+      } else if (input.type === 'number') {
+        if (parseFloat(input.value) > 0 || input.value === '') {
+          input.style.borderColor = input.value ? '#2e7d32' : '#e1f5fe';
+        } else {
+          input.style.borderColor = '#d32f2f';
+        }
+      } else if (input.required) {
+        if (input.value.trim()) {
+          input.style.borderColor = '#2e7d32';
+        } else if (input.value === '') {
+          input.style.borderColor = '#e1f5fe';
+        }
+      }
+    }
+
+    handleSubmit(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this.form);
+      const employee = {
+        id: document.getElementById('employeeId').value,
+        name: document.getElementById('employeeName').value.trim(),
+        address: document.getElementById('employeeAddress').value.trim(),
+        phone: document.getElementById('employeePhone').value.trim(),
+        salary: parseFloat(document.getElementById('employeeSalary').value)
+      };
+
+      // Additional validation
+      if (!this.validateEmployee(employee)) {
+        return;
+      }
+
+      // Add employee
+      this.employees.push(employee);
+      this.showSuccessMessage();
+      this.clearForm();
+      this.updateEmployeeId();
+      this.renderEmployees();
+      this.updateEmployeeCount();
+    }
+
+    validateEmployee(employee) {
+      if (!employee.name || !employee.address || !employee.phone || !employee.salary) {
+        alert('Please fill in all required fields.');
+        return false;
+      }
+
+      if (employee.salary <= 0) {
+        alert('Salary must be greater than 0.');
+        return false;
+      }
+
+      const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+      if (!phoneRegex.test(employee.phone)) {
+        alert('Please enter a valid phone number.');
+        return false;
+      }
+
+      return true;
+    }
+
+    showSuccessMessage() {
+      this.successMessage.style.display = 'flex';
+      setTimeout(() => {
+        this.successMessage.style.display = 'none';
+      }, 3000);
+    }
+
+    clearForm() {
+      this.form.reset();
+      // Reset border colors
+      const inputs = this.form.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        if (input.id !== 'employeeId') {
+          input.style.borderColor = '#e1f5fe';
+        }
+      });
+    }
+
+    updateEmployeeId() {
+      const employeeIdField = document.getElementById('employeeId');
+      employeeIdField.value = `EMP-${String(this.currentId).padStart(3, '0')}`;
+      this.currentId++;
+    }
+
+    renderEmployees() {
+      if (this.employees.length === 0) {
+        this.employeesGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <h3>No employees added yet</h3>
+                            <p>Start by adding your first employee using the form</p>
+                        </div>
+                    `;
+        return;
+      }
+
+      this.employeesGrid.innerHTML = this.employees.map((employee, index) => `
+                    <div class="employee-card">
+                        <button class="delete-btn" onclick="employeeManager.deleteEmployee(${index})" title="Delete Employee">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <div class="employee-id">${employee.id}</div>
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-details">
+                            <div class="detail-row">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${employee.address}</span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-phone"></i>
+                                <span>${employee.phone}</span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span class="salary">$${employee.salary.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+    }
+
+    deleteEmployee(index) {
+      if (confirm('Are you sure you want to delete this employee?')) {
+        this.employees.splice(index, 1);
+        this.renderEmployees();
+        this.updateEmployeeCount();
+      }
+    }
+
+    updateEmployeeCount() {
+      const count = this.employees.length;
+      this.employeeCount.textContent = `${count} Employee${count !== 1 ? 's' : ''}`;
+    }
+  }
+
+  // Initialize the employee manager
+  const employeeManager = new EmployeeManager();
+
+  // Add some sample animations and interactions
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add ripple effect to buttons
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+      circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+      circle.style.position = 'absolute';
+      circle.style.borderRadius = '50%';
+      circle.style.background = 'rgba(255, 255, 255, 0.6)';
+      circle.style.transform = 'scale(0)';
+      circle.style.animation = 'ripple 0.6s linear';
+      circle.style.pointerEvents = 'none';
+
+      const ripple = button.getElementsByClassName('ripple')[0];
+      if (ripple) {
+        ripple.remove();
+      }
+
+      circle.classList.add('ripple');
+      button.appendChild(circle);
+    }
+
+    document.querySelector('.btn-save').addEventListener('click', createRipple);
+
+    // Add CSS for ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+                .btn-save {
+                    position: relative;
+                    overflow: hidden;
+                }
+            `;
+    document.head.appendChild(style);
+  });
+</script>
+</body>
+</html>
