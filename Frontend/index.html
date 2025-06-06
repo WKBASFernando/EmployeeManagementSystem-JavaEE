@@ -1,1 +1,587 @@
-Fuk u
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH0dyQ4mX+0pL+FJ6q1+cYB7uD+zVY0opQ+kkcV8f3y6M8FJ5vX2Ok7cXWZewNfE" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #1e40af 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-actions::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .quick-actions h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        .action-btn-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .action-btn-text {
+            flex: 1;
+        }
+
+        .action-btn-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-btn-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recent-activity::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .recent-activity h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .action-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-tachometer-alt"></i> Employee Management System</h1>
+        <p>Comprehensive employee management and analytics at your fingertips</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 class="card-title">Total Employees</h3>
+            <div class="stat-number" id="totalEmployees">0</div>
+            <div class="stat-label">Active Staff Members</div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h3 class="card-title">New Hires</h3>
+            <div class="stat-number" id="newHires">0</div>
+            <div class="stat-label">This Month</div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="card-title">Departments</h3>
+            <div class="stat-number" id="departments">5</div>
+            <div class="stat-label">Active Departments</div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <h3 class="card-title">Avg. Salary</h3>
+            <div class="stat-number" id="avgSalary">$0</div>
+            <div class="stat-label">Monthly Average</div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="#" class="action-btn" onclick="navigateToEmployeeManagement()">
+                <div class="action-btn-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <div class="action-btn-text">
+                    <div class="action-btn-title">Employee Management</div>
+                    <div class="action-btn-desc">Add, edit, and manage employee records</div>
+                </div>
+            </a>
+
+            <a href="#" class="action-btn">
+                <div class="action-btn-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="action-btn-text">
+                    <div class="action-btn-title">Analytics & Reports</div>
+                    <div class="action-btn-desc">View detailed workforce analytics</div>
+                </div>
+            </a>
+
+            <a href="#" class="action-btn">
+                <div class="action-btn-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="action-btn-text">
+                    <div class="action-btn-title">Attendance Tracking</div>
+                    <div class="action-btn-desc">Monitor employee attendance patterns</div>
+                </div>
+            </a>
+
+            <a href="#" class="action-btn">
+                <div class="action-btn-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="action-btn-text">
+                    <div class="action-btn-title">System Settings</div>
+                    <div class="action-btn-desc">Configure system preferences</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="recent-activity">
+        <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+        <div id="activityList">
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Welcome to the HR Dashboard</div>
+                    <div class="activity-time">Start by adding employees to see activity here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3U6E+4A9A2Q6b8o0H4F/h9JzRoY0y88TDg8SRGOFUogkflv5K50FUP8VfZfWv4c" crossorigin="anonymous"></script>
+
+<script>
+    class Dashboard {
+        constructor() {
+            this.employees = [];
+            this.init();
+        }
+
+        init() {
+            this.updateStats();
+            this.setupEventListeners();
+            this.loadSampleData();
+        }
+
+        setupEventListeners() {
+            // Add ripple effect to action buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', this.createRipple);
+            });
+        }
+
+        createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement('span');
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+            circle.style.position = 'absolute';
+            circle.style.borderRadius = '50%';
+            circle.style.background = 'rgba(255, 255, 255, 0.3)';
+            circle.style.transform = 'scale(0)';
+            circle.style.animation = 'ripple 0.6s linear';
+            circle.style.pointerEvents = 'none';
+
+            const ripple = button.getElementsByClassName('ripple')[0];
+            if (ripple) {
+                ripple.remove();
+            }
+
+            circle.classList.add('ripple');
+            button.appendChild(circle);
+        }
+
+        updateStats() {
+            // In a real application, these would come from your employee management system
+            const totalEmployees = this.employees.length;
+            const newHires = this.employees.filter(emp => {
+                // Simulate new hires this month
+                return Math.random() > 0.7;
+            }).length;
+
+            const avgSalary = totalEmployees > 0
+                ? this.employees.reduce((sum, emp) => sum + (emp.salary || 0), 0) / totalEmployees
+                : 0;
+
+            // Animate counter updates
+            this.animateCounter('totalEmployees', totalEmployees);
+            this.animateCounter('newHires', newHires);
+            this.animateCounter('avgSalary', avgSalary, true);
+        }
+
+        animateCounter(elementId, targetValue, isCurrency = false) {
+            const element = document.getElementById(elementId);
+            const start = parseInt(element.textContent.replace(/[^0-9]/g, '')) || 0;
+            const increment = Math.ceil((targetValue - start) / 20);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= targetValue) {
+                    current = targetValue;
+                    clearInterval(timer);
+                }
+
+                if (isCurrency) {
+                    element.textContent = `$${current.toLocaleString()}`;
+                } else {
+                    element.textContent = current.toString();
+                }
+            }, 50);
+        }
+
+        loadSampleData() {
+            // Load sample employee data to populate dashboard
+            this.employees = [
+                { name: "John Doe", salary: 65000 },
+                { name: "Jane Smith", salary: 72000 },
+                { name: "Mike Johnson", salary: 58000 }
+            ];
+
+            this.updateStats();
+            this.updateRecentActivity();
+        }
+
+        updateRecentActivity() {
+            const activities = [
+                {
+                    icon: 'fas fa-user-plus',
+                    title: 'New employee added',
+                    time: '2 hours ago'
+                },
+                {
+                    icon: 'fas fa-edit',
+                    title: 'Employee record updated',
+                    time: '5 hours ago'
+                },
+                {
+                    icon: 'fas fa-file-alt',
+                    title: 'Monthly report generated',
+                    time: '1 day ago'
+                },
+                {
+                    icon: 'fas fa-chart-line',
+                    title: 'Analytics dashboard updated',
+                    time: '2 days ago'
+                }
+            ];
+
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = activities.map(activity => `
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="${activity.icon}"></i>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">${activity.title}</div>
+            <div class="activity-time">${activity.time}</div>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        addEmployee(employee) {
+            this.employees.push(employee);
+            this.updateStats();
+            this.updateRecentActivity();
+        }
+    }
+
+    // Initialize dashboard
+    const dashboard = new Dashboard();
+
+    // Navigation function for Employee Management
+    function navigateToEmployeeManagement() {
+        // In a real application, this would navigate to your employee management page
+        alert('This would navigate to the Employee Management System. \n\nIn your actual implementation, replace this with:\nwindow.location.href = "employee-management.html";');
+
+        // For demonstration, you could use:
+        // window.location.href = "employee-management.html";
+        // or for single page apps:
+        // showEmployeeManagementPage();
+    }
+
+    // Add some entrance animations
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.dashboard-card, .quick-actions, .recent-activity');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+</body>
+</html>
